@@ -1,12 +1,9 @@
-# Import necessary libraries
 from inference import InferencePipeline
 from inference.core.interfaces.stream.sinks import render_boxes
 import supervision as sv
 
-# Confidence threshold to filter out low-confidence detections
-CONFIDENCE_THRESHOLD = 0.89  # Lowered to detect more potential fish
+CONFIDENCE_THRESHOLD = 0.89  
 
-# Function to process predictions and print fish locations
 def process_predictions(predictions, frame):
     """
     Processes model predictions in real-time, extracting fish locations
@@ -21,7 +18,7 @@ def process_predictions(predictions, frame):
     fish_count = 1
     for (x_min, y_min, x_max, y_max), confidence in zip(detections.xyxy, detections.confidence):
         if confidence < CONFIDENCE_THRESHOLD:
-            continue  # Skip detections below confidence threshold
+            continue  
       
         width = x_max - x_min
         height = y_max - y_min
@@ -31,14 +28,12 @@ def process_predictions(predictions, frame):
         print(f"Fish {fish_count}: Center=({x_center:.2f}, {y_center:.2f}), Width={width:.2f}, Height={height:.2f}")
         fish_count += 1
 
-    return render_boxes(predictions, frame)  # Keep rendering detections on video stream
+    return render_boxes(predictions, frame)  
 
-# Initialize the inference pipeline
 pipeline = InferencePipeline.init(
-    model_id="zebrafish_in_aquarium/4",  # Roboflow model for fish detection
-    video_reference=0,  # Use webcam (device ID 0)
-    on_prediction=process_predictions,  # Process predictions in real-time
-    api_key="4VbrdF990dieMBW6yHSR"
+    model_id="zebrafish_in_aquarium/4",  
+    video_reference=0,  
+    on_prediction=process_predictions, 
 )
 
 # Start the real-time detection
